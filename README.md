@@ -11,7 +11,6 @@ This is a python package for calculation of various linguistic features for quan
 *Quantitative Index Text Analyzer (QUITA)* lists the folowing features:
 
 Frequency Structure indicators:
-
     * Type-Token Ratio (TTR)
     * h-point (h)
     * Vocabulary Richness (R1)
@@ -27,7 +26,6 @@ Frequency Structure indicators:
     * Adjusted Modulus (A)
 
 Miscellaneous indicators
-
     * Verb Distances (VD)
     * Activity (Q)
     * Descriptivity (D)
