@@ -48,10 +48,10 @@ class QuitaText(object):
     methods to calculate linguistic features listed by Quantitative Index
     Text Analyzer (QUITA) and attributes of type/token data.
     """
-
     def __init__(self, rawText):
         self.text = self.cleanText(rawText)  # clean text
         self.tokenList = regexp_tokenize(self.text, '\w+')  # tokenize
+        self.tokenPOS = self.getTokenPOS(self.tokenList)
         self.tokenNum = len(self.tokenList)  # calculate token number
         self.typeData = self.getTypeData(self.tokenList)
         self.typeNum = len(self.typeData)
@@ -66,20 +66,22 @@ class QuitaText(object):
         return text
 
     @staticmethod
-    def isFunctionWord(word):
-        functionWordsPOS = ['DT', 'CD', 'CC', 'UH', 'EX', 'MD', 'PP', 'PP$',
-                            'WP', 'WP$', 'PDT', 'WDT', 'IN', 'TO', 'WRB']
-        return pos_tag([word])[0][1] in functionWordsPOS
+    def getTokenPOS(tokenList):
+        tag_list = pos_tag(tokenList)
+        tokenPOS = [i[1] for i in tag_list]
+        return tokenPOS
 
     @staticmethod
     def isVerb(word):
         verbPOS = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']
-        return pos_tag([word])[0][1] in verbPOS
+        word_pos = pos_tag([word])[0][1]
+        return word_pos in verbPOS
 
     @staticmethod
-    def isAdjective(word):
-        adjPOS = ['JJ', 'JJR', 'JJS']
-        return pos_tag([word])[0][1] in adjPOS
+    def isFunctionWord(word):
+        functionWordsPOS = ['DT', 'CD', 'CC', 'UH', 'EX', 'MD', 'PP', 'PP$',
+                            'WP', 'WP$', 'PDT', 'WDT', 'IN', 'TO', 'WRB']
+        return pos_tag([word])[0][1] in functionWordsPOS
 
     @staticmethod
     def getTypeData(tokenList):
@@ -194,8 +196,10 @@ class QuitaText(object):
 
     def getActivity(self):
         """calculate Activity (Q)"""
-        verbNum = sum([self.isVerb(word) for word in self.tokenList])
-        adjNum = sum([self.isAdjective(word) for word in self.tokenList])
+        verbPOS = ['VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']
+        adjPOS = ['JJ', 'JJR', 'JJS']
+        verbNum = sum([(pos in verbPOS) for pos in self.tokenPOS])
+        adjNum = sum([(pos in adjPOS) for pos in self.tokenPOS])
         return verbNum / (verbNum + adjNum)
 
     def getDescriptivity(self):
@@ -272,22 +276,22 @@ def getQuitaFeature(text):
     """calculate all linguistic features"""
     features = dict()
     quitaText = QuitaText(rawText=text)
-    features['TTR'] = quitaText.getTTR()
-    features['R'] = quitaText.getHPoint()
-    features['ATL'] = quitaText.getATL()
-    features['R4'] = quitaText.getVocabRich()
-    features['RR'] = quitaText.getRR()
-    features['RRmc'] = quitaText.getRRmc()
-    features['TC'] = quitaText.getTC()
-    features['STC'] = quitaText.getSTC()
-    features['Q'] = quitaText.getActivity()
-    features['D'] = quitaText.getDescriptivity()
-    features['CL'] = quitaText.getCurveLen()
-    features['R'] = quitaText.getCLI()
-    features['Lambda'] = quitaText.getLambda()
-    features['A'] = quitaText.getAdjMod()
-    features['G'] = quitaText.getGiniCoef()
-    features['HL'] = quitaText.getHL()
-    features['Alpha'] = quitaText.getAlpha()
-    features['VD'] = quitaText.getVerbDist()
+    features['TTR'] = [quitaText.getTTR()]
+    features['R'] = [quitaText.getHPoint()]
+    features['ATL'] = [quitaText.getATL()]
+    features['R4'] = [quitaText.getVocabRich()]
+    features['RR'] = [quitaText.getRR()]
+    features['RRmc'] = [quitaText.getRRmc()]
+    features['TC'] = [quitaText.getTC()]
+    features['STC'] = [quitaText.getSTC()]
+    features['Q'] = [quitaText.getActivity()]
+    features['D'] = [quitaText.getDescriptivity()]
+    features['CL'] = [quitaText.getCurveLen()]
+    features['R'] = [quitaText.getCLI()]
+    features['Lambda'] = [quitaText.getLambda()]
+    features['A'] = [quitaText.getAdjMod()]
+    features['G'] = [quitaText.getGiniCoef()]
+    features['HL'] = [quitaText.getHL()]
+    features['Alpha'] = [quitaText.getAlpha()]
+    features['VD'] = [quitaText.getVerbDist()]
     return features
