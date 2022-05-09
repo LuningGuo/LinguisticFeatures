@@ -1,5 +1,7 @@
 # LinguisticFeatures
 
+I change here!
+
 This is a python package for calculation of various linguistic features for quantitative/corpus linguistics study. It includes two modules:
 
 * `quita.py`: Linguistic features listed by software *Quantitative Index Text Analyzer (QUITA)*
